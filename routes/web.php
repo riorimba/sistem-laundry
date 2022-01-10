@@ -23,4 +23,9 @@ Route::group(['middleware' => ['role:member|admin|kasir|owner']], function () {
 
 Route::group(['middleware' => ['role:admin|kasir|owner']], function () {
     Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
+    Route::get('/register', 'HomeController@register')->name('register');
+    Route::get('/outlet', 'HomeController@outlet')->name('outlet');
+    Route::get('/paket', 'HomeController@paket')->name('paket');
+    Route::get('/user', 'HomeController@user')->name('user');
+    Route::get('/laporan', 'HomeController@laporan')->name('laporan');
 });

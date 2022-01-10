@@ -30,4 +30,26 @@ class HomeController extends Controller
     {
         return view('dashboard');
     }
+
+    public function register()
+    {
+        return view('register');
+    }
+
+    public function outlet()
+    {
+        return view('outlet');
+    }
+    public function paket()
+    {
+        return view('paket');
+    }
+    public function user()
+    {
+        return view('user');
+    }
+    public function laporan()
+    {
+        return view('laporan');
+    }
 }
