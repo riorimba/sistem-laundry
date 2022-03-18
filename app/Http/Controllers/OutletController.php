@@ -4,65 +4,77 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Outlet;
-use Illuminate\Support\Facades\validator;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class OutletController extends Controller
 {
-    //add
-    public function store(Request $request) {
-        $validator = validator::make($request->all(), [
-            'nama_outlet' => 'required|string|max:255',
+    //tampil data
+    public function show(){
+        $data = DB::table('outlets')->paginate(5);
+        return view('sidebar.outlet.outlet', ['outlet' => $data]);
+        
+    }
+
+    public function add() {
+        return view('sidebar.outlet.add-outlet');
+    }
+
+    public function save(Request $request) {
+        $validator = $request->validate([
+            'nama' => 'required|string|max:100',
             'alamat' => 'required|string',
-        ]);
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
-        }        
-        $Outlet = Outlet::create([
-            'nama_outlet'=>$request->get('nama_outlet'),
-            'alamat'=>$request->get('alamat'),
-        ]);
-        if($Outlet) {
-            return response()->json(['status' => 'data outlet berhasil ditambahkan']);
-        }else {
-            return response()->json(['status' => 'data outlet gagal ditambahkan']);
-        }
+            'telp'=>'required|string|max:15',
+            ],
+            [
+                'nama.required' => 'Nama outlet tidak boleh kosong!',
+                'nama.max' => 'Nama melebihi batas!',
+    
+                'alamat.required' => 'Alamat outlet tidak boleh kosong!',
+    
+                'telp.required' => 'Nomor telepon outlet tidak boleh kosong!',
+                'telp.max' => 'Panjang nomor telepon melebihi batas!',
+            ]);
+            $outlet = Outlet::create([
+                'nama'=>$request->get('nama'),
+                'alamat'=>$request->get('alamat'),
+                'telp'=>$request->get('telp'),
+                ]);
+                return redirect()->route('show-outlet')->with('message-simpan','Data berhasil disimpan!');
     }
 
-    //show
-    public function show() {
-        $Outlet = Outlet::get();
-        return response()->json($Outlet);
+    public function edit($id) {
+        $outlet = DB::table('outlets')->where('id',$id)->first();
+        return view('sidebar.outlet.update-outlet',['outlet' => $outlet]);
     }
 
-    //update
-    public function update(Request $req, $id) {
-        //validasi
-        $validator = validator::make($req->all(),[
-            'nama_outlet' => 'required|string|max:255',
+    public function update(Request $request, $id) {
+        $validator = $request->validate([
+            'nama' => 'required|string|max:100',
             'alamat' => 'required|string',
-        ]);
-        if($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-
-        $Outlet = Outlet::where('id', $id)->update([
-            'nama_outlet' => $req->get('nama_outlet'),
-            'alamat' => $req->get('alamat'),
-        ]);
-        if($outlet) {
-            return response()->json(['status' => 'data outlet berhasil diperbarui']);
-        }else {
-            return response()->json(['status' => 'data outlet gagal diperbarui']);
-        }
+            'telp'=>'required|string|max:15',
+            ],
+            [
+                'nama.required' => 'Nama outlet tidak boleh kosong!',
+                'nama.max' => 'Nama melebihi batas!',
+    
+                'alamat.required' => 'Alamat outlet tidak boleh kosong!',
+    
+                'telp.required' => 'Nomor telepon outlet tidak boleh kosong!',
+                'telp.max' => 'Panjang nomor telepon melebihi batas!',
+            ]
+        );
+        $outlet = Outlet::where('id',$id)->update([
+                	'nama'=>$request->get('nama'),
+                	'alamat'=>$request->get('alamat'),
+                	'telp'=>$request->get('telp'),
+                ]);
+        return redirect()->route('show-outlet')->with('message-update','Data berhasil diupdate!');
     }
-
-    //delete
+    
     public function delete($id) {
-        $Outlet = Outlet::where('id', $id)->delete();
-        if($Outlet) {
-            return response()->json(['status' => 'data outlet berhasil dihapus']);
-        }else {
-            return response()->json(['status' => 'data outlet gagal dihapus']);
-        }
+        $outlet = Outlet::where('id',$id)->delete();
+
+        return redirect()->back()->with('message-hapus','Data berhasil dihapus!');;
     }
 }

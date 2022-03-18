@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePaketsTable extends Migration
+class CreateDetailTransaksisTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreatePaketsTable extends Migration
      */
     public function up()
     {
-        Schema::create('pakets', function (Blueprint $table) {
+        Schema::create('detail_transaksis', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nama_paket');
-            $table->integer('harga');
+            $table->unsignedBigInteger('id_transaksi');
+            $table->double('subtotal');
+            $table->text('keterangan');
+            $table->foreign('id_transaksi')->references('id')->on('transaksis');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ class CreatePaketsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pakets');
+        Schema::dropIfExists('detail_transaksis');
     }
 }

@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetailTransaksi extends Model
 {
-    use HasFactory;
-    protected $table = 'detail_transaksis';
-    protected $primaryKey = 'id';
-    protected $fillable = [
-        'id_transaksi', 'id_paket', 'berat', 'total_harga'
+    protected $table='detail_transaksis';
+    protected $primaryKey='id';
+    protected $fillable=[
+        'id_transaksi','subtotal','keterangan'
     ];
+    public function transaksi()
+    {
+        return $this->belongsT0('App\Transaksi', 'id_transaksi', 'id');
+    }
     public $timestamps=true;
 }

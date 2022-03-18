@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Paket extends Model
 {
-    use HasFactory;
     protected $table = 'pakets';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'nama_paket', 'harga'
+        'id_outlet','jenis','nama_paket', 'harga'
     ];
+    public function outlet()
+    {
+        return $this->belongsT0('App\Outlet', 'id_outlet', 'id');
+    }
     public $timestamps=true;
 }
