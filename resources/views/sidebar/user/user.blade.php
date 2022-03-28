@@ -1,10 +1,10 @@
 @extends('layouts.master')
 @section('links') 
 <li class="menu-header">Dashboard</li>
-<li class="active"><a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+<li ><a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
 <li class="menu-header">Content</li>
 @role('admin|kasir')
-<li ><a class="nav-link" href="{{route ('show-member')}}"><i class="fas fa-user"></i> <span>Register Member</span></a></li>
+<li ><a class="nav-link" href="{{route ('show-member')}}"><i class="fas fa-user"></i> <span>Member</span></a></li>
 @endrole
 @role('admin')
 <li ><a class="nav-link" href="{{route ('show-outlet')}}"><i class="fas fa-home"></i> <span>Outlet Laundry</span></a></li>
@@ -14,7 +14,7 @@
 <li ><a class="nav-link" href="{{ route('show-transaksi') }}"><i class="fas fa-file-invoice-dollar"></i> <span>Transaksi</span></a></li>
 @endrole
 @role('admin')
-<li ><a class="nav-link" href="{{ route ('show-user') }}"><i class="fas fa-users-cog"></i></i> <span>User</span></a></li>
+<li class="active"><a class="nav-link" href="{{ route ('show-user') }}"><i class="fas fa-users-cog"></i></i> <span>User Manajemen</span></a></li>
 @endrole
 @role('owner|admin|kasir')
 <li ><a class="nav-link" href="{{route('show-laporan')}}"><i class="fas fa-clipboard-list"></i></i> <span>Laporan Excel</span></a></li>
@@ -81,12 +81,20 @@
                     <td>{{($data_user->currentpage()-1)*$data_user->perpage()+$no+1}}</td>
                     <td>{{$data->name}}</td>
                     <td>{{$data->email}}</td>
-                    <td>{{ $data->getRoleNames()[0] }}</td>
+                    <td>
+                      @if(!empty($data->getRoleNames()))
+                        @foreach($data->getRoleNames() as $v)
+                          <label class="badge badge-success">{{ $v }}</label>
+                        @endforeach
+                      @endif
+                    </td>
+                    
                     <td>
                       <form action="{{route('delete-user',$data->id)}}" id="hapus{{$data->id}}"method="POST">
-                      <button class="btn btn-icon btn-danger hapus"><i class="fas fa-times"></i></button>
                         @csrf
                         @method('delete')
+                        <a href="{{route('edit-user',$data->id)}}" class="btn btn-icon btn-primary"><i class="far fa-edit"></i></a>
+                        <button class="btn btn-icon btn-danger hapus"><i class="fas fa-times"></i></button>
                       </form>
                     </td>
                   </tr>

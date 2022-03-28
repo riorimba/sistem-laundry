@@ -16,7 +16,7 @@ class MemberExport implements FromCollection, WithHeadings
     {
         return [
             '#',
-            'Nama',
+            'Nama Member',
             'Alamat',
             'Jenis Kelamin',
             'Telp',

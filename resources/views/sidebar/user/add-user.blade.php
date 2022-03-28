@@ -1,10 +1,10 @@
 @extends('layouts.master')
 @section('links') 
 <li class="menu-header">Dashboard</li>
-<li class="active"><a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+<li ><a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
 <li class="menu-header">Content</li>
 @role('admin|kasir')
-<li ><a class="nav-link" href="{{route ('show-member')}}"><i class="fas fa-user"></i> <span>Register Member</span></a></li>
+<li ><a class="nav-link" href="{{route ('show-member')}}"><i class="fas fa-user"></i> <span>Member</span></a></li>
 @endrole
 @role('admin')
 <li ><a class="nav-link" href="{{route ('show-outlet')}}"><i class="fas fa-home"></i> <span>Outlet Laundry</span></a></li>
@@ -14,7 +14,7 @@
 <li ><a class="nav-link" href="{{ route('show-transaksi') }}"><i class="fas fa-file-invoice-dollar"></i> <span>Transaksi</span></a></li>
 @endrole
 @role('admin')
-<li ><a class="nav-link" href="{{ route ('show-user') }}"><i class="fas fa-users-cog"></i></i> <span>User</span></a></li>
+<li class="active"><a class="nav-link" href="{{ route ('show-user') }}"><i class="fas fa-users-cog"></i></i> <span>User Manajemen</span></a></li>
 @endrole
 @role('owner|admin|kasir')
 <li ><a class="nav-link" href="{{route('show-laporan')}}"><i class="fas fa-clipboard-list"></i></i> <span>Laporan Excel</span></a></li>
@@ -72,9 +72,22 @@
                         @enderror
                       </label>
                       </div>
+
+                      {{-- tanya pak bidin agar dibuar foreach --}}
+                      <div class="form-group">
+                        <label>Role :</label>
+                        <select class="form-control col-md-2" name="roles">
+                        <option value="" selected>--Pilih--</option>
+                        <option value="member">Member</option>
+                        <option value="admin">Admin</option>
+                        <option value="kasir">Kasir</option>
+                        <option value="owner">owner</option>
+                        </select>
+                      </div>
+                      <br>
                       
-                      <button class="btn btn-primary" type="submit">Tambah</button>
-                      <button class="btn btn-secondary" type="reset">Reset</button>
+                      <button class="btn btn-primary" type="submit" >Tambah</button>
+                      <button class="btn btn-secondary" type="reset" >Reset</button>
                     
                     </form>
               </div>

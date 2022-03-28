@@ -14,7 +14,7 @@
 <li ><a class="nav-link" href="{{ route('show-transaksi') }}"><i class="fas fa-file-invoice-dollar"></i> <span>Transaksi</span></a></li>
 @endrole
 @role('admin')
-<li ><a class="nav-link" href="{{ route ('show-user') }}"><i class="fas fa-users-cog"></i></i> <span>User</span></a></li>
+<li ><a class="nav-link" href="{{ route ('show-user') }}"><i class="fas fa-users-cog"></i></i> <span>User Manajemen</span></a></li>
 @endrole
 @role('owner|admin|kasir')
 <li ><a class="nav-link" href="{{route('show-laporan')}}"><i class="fas fa-clipboard-list"></i></i> <span>Laporan Excel</span></a></li>
@@ -31,14 +31,13 @@
           <div class="card-icon bg-primary">
             <i class="fas fa-home"></i>
           </div>
-          <div class="card-wrap"><a href="{{ route('show-outlet') }}">
+          <div class="card-wrap">
             <div class="card-header">
               <h4>Total Outlet</h4>
             </div>
             <div class="card-body">
               {{ $outlet->count() }}
             </div>
-          </a>
           </div>
         </div>
       </div>

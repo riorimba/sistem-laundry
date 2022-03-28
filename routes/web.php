@@ -15,8 +15,8 @@
 Route::get('/', function () {
     return view('login');
 });
-Route::get('/register-member', function() {
-    return view('register-member');
+Route::get('/register', function() {
+    return view('register');
 });
 
 
@@ -44,6 +44,8 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::get('/user', 'UserController@show')->name('show-user');
     Route::get('/user/add', 'UserController@add')->name('add-user');
     Route::post('/user/save', 'UserController@save')->name('save-user');
+    Route::get('/user/edit/{user}', 'UserController@edit')->name('edit-user');
+    Route::put('/user/edit/{user}', 'UserController@update')->name('update-user');
     Route::delete('/user/delete/{id}', 'UserController@delete')->name('delete-user');
 });
 
@@ -63,6 +65,7 @@ Route::group(['middleware' => ['role:admin|kasir']], function () {
     Route::get('/transaksi/edit/{id}', 'TransaksiController@edit')->name('edit-transaksi');
     Route::put('/transaksi/edit/{id}', 'TransaksiController@update')->name('update-transaksi');
     Route::delete('/transaksi/delete/{id}', 'TransaksiController@delete')->name('delete-transaksi');
+    Route::delete('/transaksi/delete', 'TransaksiController@deleteAll')->name('delete-all');
 });
 
 
@@ -70,9 +73,6 @@ Route::group(['middleware' => ['role:admin|kasir|owner']], function () {
 
     //dashboard
     Route::get('/dashboard', 'DashboardController@dashboard')->name('dashboard');
-    //user
-    Route::get('/user/edit/{id}', 'UserController@edit')->name('edit-user');
-    Route::put('/user/edit/{id}', 'UserController@update')->name('update-user');
     //Transaksi
     Route::get('/transaksi', 'TransaksiController@show')->name('show-transaksi');
     //Detail Transaksi

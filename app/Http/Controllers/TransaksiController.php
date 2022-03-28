@@ -157,6 +157,19 @@ class TransaksiController extends Controller
         $detail = DB::table('detail_transaksis')->where('id_transaksi', $id)->first();
         return view('sidebar.transaksi.detail-transaksi', compact('transaksi','outlet','member','paket','detail',));
     }
+
+    public function deleteAll(){
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Transaksi::truncate();
+        DetailTransaksi::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // $transaksi = DB::table('transaksis')->delete();
+        // $detail = DB::table('detail_transaksis')->delete();
+        // dd($transaksi, $detail);
+
+        return redirect()->back()->with('message-hapus','Data berhasil dihapus!');
+    }
     
     //Export
     public function export() {

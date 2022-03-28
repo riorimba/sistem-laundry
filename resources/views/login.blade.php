@@ -71,9 +71,9 @@
               </div>
             </form>
 
-            <div class="mt-5 text-center">
-              Don't have an account? <a href="/register-member">Create new one</a>
-            </div>
+            {{-- <div class="mt-5 text-center">
+              Don't have an account? <a href="/register">Create new one</a>
+            </div> --}}
 
             <div class="text-center mt-5 text-small">
               Copyright &copy; Your Company. Made with 💙 by Stisla

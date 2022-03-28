@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Arr;
 use App\Exports\UserExport;
 use Illuminate\Pagination\Paginator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -24,14 +25,17 @@ class UserController extends Controller
     }
 
     public function add() {
-        return view('sidebar.user.add-user');
+        $roles = Role::pluck('name')->all();
+        // return $roles;
+        // dd($roles);
+        return view('sidebar.user.add-user', compact('roles'));
     }
 
     public function save(Request $request) {
         $validator = $request->validate([
             'name' => 'required|string|max:100',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8',],
+            'password' => ['required', 'string', 'min:6',],
             ],
             [
                 'name.required' => 'Nama tidak boleh kosong!',
@@ -41,52 +45,91 @@ class UserController extends Controller
     
                 'password.required' => 'password tidak boleh kosong!',
             ]);
-            $user = User::create([
-                'name'  => $request->get('name'),
-                'email' => $request->get('email'),
-                'password' => Hash::make($request->get('password')),
-            ]);
-            $user->assignRole('kasir');
-            // return $user;
+            $input = $request->all();
+            $input['password'] = Hash::make($input['password']);
+    
+            $user = User::create($input);
+            $user->assignRole($request->input('roles'));
+
             return redirect()->route('show-user')->with('message-simpan','Data berhasil disimpan!');
     }
     
-    public function edit(User $user) 
+    public function edit($id)
     {
-        return view('sidebar.user.update-user', [
-            'user' => $user,
-            'userRole' => $user->roles->pluck('name')->toArray(),
-            'roles' => Role::latest()->get()
-        ]);
+        $user = User::find($id);
+        $roles = Role::pluck('name')->all();
+        $userRole = $user->roles->pluck('name')->all();
+        // return $user, $roles, $userRole;
+        // dd($user, $roles, $userRole);
+        return view('sidebar.user.update-user',compact('user','roles','userRole'));
     }
+
+    // public function edit(User $user) 
+    // {
+    //     return view('sidebar.user.update-user', [
+    //         'user' => $user,
+    //         'userRole' => $user->roles->pluck('name')->toArray(),
+    //         'roles' => Role::latest()->get()
+    //     ]);
+    // }
 
     // public function edit($id) {
     //     $user = DB::table('users')->where('id',$id)->first();
     //     return view('sidebar.user.update-user',['user' => $user]);
     // }
 
-    public function update(Request $request, $id) {
-        $validator = $request->validate([
-            'name' => 'required|string|max:100',
-            'email' => 'required|string',
-            'password'=>'required|string|max:15',
-            ],
-            [
-                'name.required' => 'Nama  tidak boleh kosong!',
-                'name.max' => 'Nama melebihi batas!',
+    public function update(Request $request, $id)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,'.$id,
+            // 'password' => 'same:confirm-password',
+            'roles' => 'required'
+        ],
+        [
+            'roles.required' => 'role harus di isi!',
+        ]);
     
-                'email.required' => 'email tidak boleh kosong!',
+        $input = $request->all();
+        if(!empty($input['password'])){ 
+            $input['password'] = Hash::make($input['password']);
+        }else{
+            $input = Arr::except($input,array('password'));    
+        }
     
-                'password.required' => 'password tidak boleh kosong!',
-            ]
-        );
-        $user = User::where('id',$id)->update([
-                	'name'=>$request->get('name'),
-                	'email'=>$request->get('email'),
-                	'password'=>$request->get('password'),
-                ]);
-        return redirect()->route('show-user')->with('message-update','Data berhasil diupdate!');
+        $user = User::find($id);
+        $user->update($input);
+        DB::table('model_has_roles')->where('model_id',$id)->delete();
+    
+        $user->assignRole($request->input('roles'));
+        // return $request;
+        // dd($request);
+        return redirect()->route('show-user')
+                        ->with('message-simpan','User berhasil diupdate');
     }
+
+    // public function update(Request $request, $id) {
+    //     $validator = $request->validate([
+    //         'name' => 'required|string|max:100',
+    //         'email' => 'required|string',
+    //         'password'=>'required|string|max:15',
+    //         ],
+    //         [
+    //             'name.required' => 'Nama  tidak boleh kosong!',
+    //             'name.max' => 'Nama melebihi batas!',
+    
+    //             'email.required' => 'email tidak boleh kosong!',
+    
+    //             'password.required' => 'password tidak boleh kosong!',
+    //         ]
+    //     );
+    //     $user = User::where('id',$id)->update([
+    //             	'name'=>$request->get('name'),
+    //             	'email'=>$request->get('email'),
+    //             	'password'=>Hash::make($request->get('password')),
+    //             ]);
+    //     return redirect()->route('show-user')->with('message-update','Data berhasil diupdate!');
+    // }
     
     public function delete($id) {
         $user = User::where('id',$id)->delete();
