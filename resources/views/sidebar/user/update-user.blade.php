@@ -64,9 +64,6 @@
                       <div class="form-group">
                         <label>Role: (member, kasir, owner, admin)</label>
                         <input type="text" class="form-control" name="roles" value="">
-                        {{-- @if ($errors->has('roles'))
-                          <span class="text-danger text-left">{{ $errors->first('role') }}</span>
-                        @endif --}}
                       </div>
 
                       {{-- <div class="form-group">

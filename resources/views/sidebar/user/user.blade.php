@@ -93,7 +93,7 @@
                       <form action="{{route('delete-user',$data->id)}}" id="hapus{{$data->id}}"method="POST">
                         @csrf
                         @method('delete')
-                        <a href="{{route('edit-user',$data->id)}}" class="btn btn-icon btn-primary"><i class="far fa-edit"></i></a>
+                        <a href="{{route('edit-user', Crypt::encryptString($data->id))}}" class="btn btn-icon btn-primary"><i class="far fa-edit"></i></a>
                         <button class="btn btn-icon btn-danger hapus"><i class="fas fa-times"></i></button>
                       </form>
                     </td>

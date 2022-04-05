@@ -24,9 +24,8 @@
 <div class="section-header">
     <h1>Transaksi Laundry</h1>
     <div class="section-header-breadcrumb">
-      <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-      <div class="breadcrumb-item"><a href="#">Transaksi</a></div>
-      <div class="breadcrumb-item">Form</div>
+      <div class="breadcrumb-item active"><a href="{{ route("dashboard") }}">Dashboard</a></div>
+      <div class="breadcrumb-item"><a href="{{ route('show-transaksi') }}">Transaksi</a></div>
     </div>
   </div>
     <div class="section-body">
@@ -95,9 +94,9 @@
                       <form action="{{route('delete-transaksi',$data->id_transaksi)}}" id="hapus{{$data->id}}"method="POST">
                         @csrf
                         @method('delete')
-                          <a href=" {{route('show-detail',$data->id_transaksi)}}" class="btn btn-icon btn-success" ><i class="fas fa-eye"></i><a>
+                          <a href=" {{route('show-detail',Crypt::encryptString($data->id_transaksi))}}" class="btn btn-icon btn-success" ><i class="fas fa-eye"></i><a>
                           @role('admin|kasir')
-                          <a href="{{route('edit-transaksi',$data->id_transaksi)}}" class="btn btn-icon btn-primary"><i class="far fa-edit"></i></a>
+                          <a href="{{route('edit-transaksi',Crypt::encryptString($data->id_transaksi))}}" class="btn btn-icon btn-primary"><i class="far fa-edit"></i></a>
                           <button class="btn btn-icon btn-danger hapus"><i class="fas fa-times"></i></button>
                         </form>
                         @endrole
@@ -111,9 +110,7 @@
          </div>
 
     </div>
-@stop
-
-@push('scripts')
+    @push('scripts')
 <script src="../node_modules/sweetalert/dist/sweetalert.min.js"></script>
 @endpush
 @push('after-scripts')
@@ -140,3 +137,5 @@ $(".hapus").click(function(hapus) {
 });
 </script>
 @endpush
+@stop
+

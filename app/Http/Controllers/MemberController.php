@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 use App\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Hashids\Hashids;
+use Illuminate\Support\Facades\Crypt;
+
 
 class MemberController extends Controller
 {
     //tampil data member
     public function show(){
         $data = DB::table('members')->paginate(5);
+        // return $data;
         return view('sidebar.member.member',['member' => $data]);
     }
 
@@ -21,7 +25,7 @@ class MemberController extends Controller
     //simpan data
     public function save(Request $request){
         $validator = $request->validate([
-            'nama_member' => 'required|string|max:100',
+            'nama_member' => 'required|string|max:100|unique:members,nama_member',
             'alamat' => 'required|string',
             'jenis_kelamin'=>'required',
             'telp'=>'required|string|max:15',
@@ -50,14 +54,16 @@ class MemberController extends Controller
 
     //tampil edit data
     public function edit($id){
-        $member = DB::table('members')->where('id',$id)->first();
+        $decryptedId = Crypt::decryptString($id);
+
+        $member = Member::findOrFail($decryptedId);
         return view('sidebar.member.update-member',['member' => $member]);
     }
 
     //update data
     public function update(Request $request, $id){
         $validator = $request->validate([
-            'nama_member' => 'required|string|max:100',
+            'nama_member' => 'required|string|max:100|unique:members,nama_member',
             'alamat' => 'required|string',
             'jenis_kelamin'=>'required',
             'telp'=>'required|string|max:15',

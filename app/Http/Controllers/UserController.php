@@ -12,6 +12,8 @@ use Illuminate\Pagination\Paginator;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Crypt;
+
 
 
 class UserController extends Controller
@@ -56,34 +58,19 @@ class UserController extends Controller
     
     public function edit($id)
     {
-        $user = User::find($id);
+        $decryptedId = Crypt::decryptString($id);
+
+        $user = User::findOrFail($decryptedId);
         $roles = Role::pluck('name')->all();
         $userRole = $user->roles->pluck('name')->all();
-        // return $user, $roles, $userRole;
-        // dd($user, $roles, $userRole);
         return view('sidebar.user.update-user',compact('user','roles','userRole'));
     }
-
-    // public function edit(User $user) 
-    // {
-    //     return view('sidebar.user.update-user', [
-    //         'user' => $user,
-    //         'userRole' => $user->roles->pluck('name')->toArray(),
-    //         'roles' => Role::latest()->get()
-    //     ]);
-    // }
-
-    // public function edit($id) {
-    //     $user = DB::table('users')->where('id',$id)->first();
-    //     return view('sidebar.user.update-user',['user' => $user]);
-    // }
 
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required',
+            'name' => 'required|unique:users,name',
             'email' => 'required|email|unique:users,email,'.$id,
-            // 'password' => 'same:confirm-password',
             'roles' => 'required'
         ],
         [
@@ -107,29 +94,6 @@ class UserController extends Controller
         return redirect()->route('show-user')
                         ->with('message-simpan','User berhasil diupdate');
     }
-
-    // public function update(Request $request, $id) {
-    //     $validator = $request->validate([
-    //         'name' => 'required|string|max:100',
-    //         'email' => 'required|string',
-    //         'password'=>'required|string|max:15',
-    //         ],
-    //         [
-    //             'name.required' => 'Nama  tidak boleh kosong!',
-    //             'name.max' => 'Nama melebihi batas!',
-    
-    //             'email.required' => 'email tidak boleh kosong!',
-    
-    //             'password.required' => 'password tidak boleh kosong!',
-    //         ]
-    //     );
-    //     $user = User::where('id',$id)->update([
-    //             	'name'=>$request->get('name'),
-    //             	'email'=>$request->get('email'),
-    //             	'password'=>Hash::make($request->get('password')),
-    //             ]);
-    //     return redirect()->route('show-user')->with('message-update','Data berhasil diupdate!');
-    // }
     
     public function delete($id) {
         $user = User::where('id',$id)->delete();

@@ -7,6 +7,8 @@ use App\Paket;
 use App\Outlet;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
+
 
 class PaketController extends Controller
 {
@@ -53,7 +55,10 @@ class PaketController extends Controller
 
     //tampil edit data
     public function edit($id){
-        $paket = DB::table('pakets')->select('*')->where('id', $id)->first();
+        $decryptedId = Crypt::decryptString($id);
+
+        $paket = Paket::findOrFail($decryptedId);
+        // $paket = DB::table('pakets')->select('*')->where('id', $decryptedId)->first();
         $outlet = DB::table('outlets')->select('id','nama')->get();
         return view('sidebar.paket.update-paket', compact('outlet','paket'));
     }

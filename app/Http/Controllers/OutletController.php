@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Outlet;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
+
 
 class OutletController extends Controller
 {
@@ -22,7 +24,7 @@ class OutletController extends Controller
 
     public function save(Request $request) {
         $validator = $request->validate([
-            'nama' => 'required|string|max:100',
+            'nama' => 'required|string|max:100|unique:outlets,nama',
             'alamat' => 'required|string',
             'telp'=>'required|string|max:15',
             ],
@@ -44,13 +46,16 @@ class OutletController extends Controller
     }
 
     public function edit($id) {
-        $outlet = DB::table('outlets')->where('id',$id)->first();
+        $decryptedId = Crypt::decryptString($id);
+
+        $outlet = Outlet::findOrFail($decryptedId);
+        // $outlet = DB::table('outlets')->where('id',$id)->first();
         return view('sidebar.outlet.update-outlet',['outlet' => $outlet]);
     }
 
     public function update(Request $request, $id) {
         $validator = $request->validate([
-            'nama' => 'required|string|max:100',
+            'nama' => 'required|string|max:100|unique:outlets,nama',
             'alamat' => 'required|string',
             'telp'=>'required|string|max:15',
             ],

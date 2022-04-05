@@ -41,12 +41,12 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::delete('/paket/delete/{id}', 'PaketController@delete')->name('delete-paket');
 
     //user
-    Route::get('/user', 'UserController@show')->name('show-user');
-    Route::get('/user/add', 'UserController@add')->name('add-user');
-    Route::post('/user/save', 'UserController@save')->name('save-user');
-    Route::get('/user/edit/{user}', 'UserController@edit')->name('edit-user');
-    Route::put('/user/edit/{user}', 'UserController@update')->name('update-user');
-    Route::delete('/user/delete/{id}', 'UserController@delete')->name('delete-user');
+    Route::get('/users', 'UserController@show')->name('show-user');
+    Route::get('/users/add', 'UserController@add')->name('add-user');
+    Route::post('/users/save', 'UserController@save')->name('save-user');
+    Route::get('/users/edit/{user}', 'UserController@edit')->name('edit-user');
+    Route::put('/users/edit/{user}', 'UserController@update')->name('update-user');
+    Route::delete('/users/delete/{id}', 'UserController@delete')->name('delete-user');
 });
 
 Route::group(['middleware' => ['role:admin|kasir']], function () {

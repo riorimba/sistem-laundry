@@ -26,6 +26,10 @@ class RouteServiceProvider extends ServiceProvider
         //
 
         parent::boot();
+
+        Route::bind('member', function ($value, $route) {
+            return $this->getModel(\App\Member::class, $value);
+        });
     }
 
     /**
@@ -70,4 +74,11 @@ class RouteServiceProvider extends ServiceProvider
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
     }
+
+    private function getModel($model, $routeKey) {
+    $id = \Hashids::connection($model)->decode($routeKey)[0] ?? null;
+    $modelInstance = resolve($model);
+
+    return  $modelInstance->findOrFail($id);
+}
 }

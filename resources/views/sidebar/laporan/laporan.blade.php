@@ -40,23 +40,23 @@
                   
                   <tr>
                     <td>Member</td>
-                    <td><i class="fas fa-file-excel"></i><a href="{{route ('export-member')}}"> member.xlsx</a></td>
+                    <td><a href="{{route ('export-member')}}" class="btn btn-success"><i class="fas fa-file-excel"></i> member.xlsx</a></td>
                   </tr>
                   <tr>
                     <td>Outlet</td>
-                    <td><i class="fas fa-file-excel"></i><a href="{{route ('export-outlet')}}">outlet.xlsx</a></td>
+                    <td><a href="{{route ('export-outlet')}}" class="btn btn-success"><i class="fas fa-file-excel"></i> outlet.xlsx</a></td>
                   </tr>
                   <tr>
                     <td>Paket</td>
-                    <td><i class="fas fa-file-excel"></i><a href="{{route ('export-paket')}}">paket.xlsx</a></td>
+                    <td><a href="{{route ('export-paket')}}" class="btn btn-success"><i class="fas fa-file-excel"></i> paket.xlsx</a></td>
                   </tr>
                   <tr>
                     <td>Transaksi</td>
-                    <td><i class="fas fa-file-excel"></i><a href="{{route ('export-transaksi')}}">transaksi.xlsx</a></td>
+                    <td><a href="{{route ('export-transaksi')}}" class="btn btn-success"><i class="fas fa-file-excel"></i> transaksi.xlsx</a></td>
                   </tr>
                   <tr>
                     <td>User</td>
-                    <td><i class="fas fa-file-excel"></i><a href="{{route ('export-user')}}">user.xlsx</a></td>
+                    <td><a href="{{route ('export-user')}}" class="btn btn-success"><i class="fas fa-file-excel"></i> user.xlsx</a></td>
                   </tr>
                 </table>
             </div>

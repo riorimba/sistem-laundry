@@ -192,6 +192,7 @@ return [
     */
 
     'aliases' => [
+        'Hashids' => Vinkla\Hashids\Facades\Hashids::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,

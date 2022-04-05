@@ -100,7 +100,7 @@
                   </div>
 
                       <div class="form-group">
-                        <label>Berat :</label>
+                        <label>Berat : (Kg)</label>
                         <input type="number" min="1" class="form-control col-md-2" name="qty">
                         <label 
                         @error('qty') 
@@ -162,12 +162,14 @@
                           <div class="form-group">
                             <label>Status :</label>
                             <br>
-                            <select class="form-control col-md-2" name="status">
-                            <option value="" selected>--Pilih--</option>
+                            <input class="form-control col-md-2" value="proses" disabled>
+                            <input name="status" value="proses" hidden>
+                            {{-- <select class="form-control col-md-2" name="status">
+                            <option value="" selected dis>--Pilih--</option>
                             <option value="proses">Proses</option>
                             <option value="selesai">Selesai</option>
                             <option value="diambil">Diambil</option>
-                            </select> 
+                            </select>  --}}
                             <label 
                             @error('status') 
                             class="text-danger"

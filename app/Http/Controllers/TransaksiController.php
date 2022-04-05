@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\Paginator;
 use App\Exports\TransaksisExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Crypt;
+
 
 class TransaksiController extends Controller
 {
@@ -41,7 +43,7 @@ class TransaksiController extends Controller
             'qty' => 'required|min:1',
             'tgl'=>'required',
             'batas_waktu'=>'required',
-            'tgl_bayar'=>'',
+            'tgl_bayar'=> 'required',
             'status'=>'required',
             'dibayar'=>'required',
             ],
@@ -53,6 +55,7 @@ class TransaksiController extends Controller
                 'qty.min' => 'Berat minimal min:! kg',
                 'tgl.required' => 'Tanggal transaksi tidak boleh kosong!',
                 'batas_waktu.required' => 'Batas waktu tidak boleh kosong!',
+                'tgl_bayar.required' => 'Tanggal bayar tidak boleh kosong!',
                 'status.required' => 'Status tidak boleh kosong!',  
                 'dibayar.required' => 'Status bayar tidak boleh kosong!',  
             ]
@@ -84,7 +87,10 @@ class TransaksiController extends Controller
 
     //tampil edit data
     public function edit($id){
-        $transaksi = DB::table('transaksis')->select('*')->where('id', $id)->first();
+        $decryptedId = Crypt::decryptString($id);
+
+        $transaksi = Transaksi::findOrFail($decryptedId);
+        // $transaksi = DB::table('transaksis')->select('*')->where('id', $decryptedId)->first();
         $outlet = DB::table('outlets')->select('id','nama')->get();
         $member = DB::table('members')->select('id','nama_member')->get();
         $paket = DB::table('pakets')->select('id','nama_paket')->get();
@@ -149,12 +155,15 @@ class TransaksiController extends Controller
     }
 
     public function detailTransaksi($id) {
-        $transaksi = DB::table('transaksis')->select('*')->where('id', $id)->first();
+        $decryptedId = Crypt::decryptString($id);
+
+        // $transaksi = Transaksi::findOrFail($decryptedId);
+        $transaksi = DB::table('transaksis')->select('*')->where('id', $decryptedId)->first();
         $outlet = DB::table('outlets')->where('id', $transaksi->id_outlet)->get();
         $member = DB::table('members')->where('id', $transaksi->id_member)->get();
         $paket  = DB::table('pakets')->where('id', $transaksi->id_paket)->get();
 
-        $detail = DB::table('detail_transaksis')->where('id_transaksi', $id)->first();
+        $detail = DB::table('detail_transaksis')->where('id_transaksi', $decryptedId)->first();
         return view('sidebar.transaksi.detail-transaksi', compact('transaksi','outlet','member','paket','detail',));
     }
 
