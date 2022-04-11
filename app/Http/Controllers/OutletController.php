@@ -7,13 +7,15 @@ use App\Outlet;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
+use Exception;
+
 
 
 class OutletController extends Controller
 {
     //tampil data
     public function show(){
-        $data = DB::table('outlets')->paginate(5);
+        $data = DB::table('outlets')->latest()->paginate(5);
         return view('sidebar.outlet.outlet', ['outlet' => $data]);
         
     }
@@ -26,16 +28,18 @@ class OutletController extends Controller
         $validator = $request->validate([
             'nama' => 'required|string|max:100|unique:outlets,nama',
             'alamat' => 'required|string',
-            'telp'=>'required|string|max:15',
+            'telp'=>'required|string|max:15|unique:outlets,telp',
             ],
             [
                 'nama.required' => 'Nama outlet tidak boleh kosong!',
                 'nama.max' => 'Nama melebihi batas!',
+                'nama.unique' => 'Nama outlet telah terdaftar, coba nama lainnya',
     
                 'alamat.required' => 'Alamat outlet tidak boleh kosong!',
     
                 'telp.required' => 'Nomor telepon outlet tidak boleh kosong!',
                 'telp.max' => 'Panjang nomor telepon melebihi batas!',
+                'telp.unique' => 'Nomer telepon outlet telah terdaftar, coba nomer lainnya',
             ]);
             $outlet = Outlet::create([
                 'nama'=>$request->get('nama'),
@@ -55,18 +59,21 @@ class OutletController extends Controller
 
     public function update(Request $request, $id) {
         $validator = $request->validate([
-            'nama' => 'required|string|max:100|unique:outlets,nama',
+            'nama' => 'required|string|max:100|unique:outlets,nama,'.$id,
             'alamat' => 'required|string',
-            'telp'=>'required|string|max:15',
+            'telp'=>'required|string|max:15|unique:outlets,telp,'.$id,
             ],
             [
                 'nama.required' => 'Nama outlet tidak boleh kosong!',
                 'nama.max' => 'Nama melebihi batas!',
+                'nama.unique' => 'Nama outlet telah terdaftar, coba nama lainnya',
     
                 'alamat.required' => 'Alamat outlet tidak boleh kosong!',
     
                 'telp.required' => 'Nomor telepon outlet tidak boleh kosong!',
                 'telp.max' => 'Panjang nomor telepon melebihi batas!',
+                'telp.unique' => 'Nomer telepon outlet telah terdaftar, coba nomer lainnya',
+
             ]
         );
         $outlet = Outlet::where('id',$id)->update([
@@ -78,8 +85,12 @@ class OutletController extends Controller
     }
     
     public function delete($id) {
-        $outlet = Outlet::where('id',$id)->delete();
-
+        try {
+            $outlet = Outlet::where('id',$id)->delete();
         return redirect()->back()->with('message-hapus','Data berhasil dihapus!');;
+        } catch(Exception $e) {
+            return redirect()->back()->with('message-gagal','Data gagal dihapus, data sedang digunakan ditransaksi!');
+        }
+        
     }
 }

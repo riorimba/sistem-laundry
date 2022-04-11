@@ -6,13 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Hashids\Hashids;
 use Illuminate\Support\Facades\Crypt;
+use Exception;
 
 
 class MemberController extends Controller
 {
     //tampil data member
     public function show(){
-        $data = DB::table('members')->paginate(5);
+        $data = DB::table('members')->latest()->paginate(5);
         // return $data;
         return view('sidebar.member.member',['member' => $data]);
     }
@@ -28,11 +29,12 @@ class MemberController extends Controller
             'nama_member' => 'required|string|max:100|unique:members,nama_member',
             'alamat' => 'required|string',
             'jenis_kelamin'=>'required',
-            'telp'=>'required|string|max:15',
+            'telp'=>'required|string|max:15|unique:members,telp',
             ],
             [
                 'nama_member.required' => 'Nama member tidak boleh kosong!',
                 'nama_member.max' => 'Nama melebihi batas!',
+                'nama_member.unique' => 'Nama member telah terdaftar, coba nama lainnya',
     
                 'alamat.required' => 'Alamat member tidak boleh kosong!',
 
@@ -40,6 +42,7 @@ class MemberController extends Controller
     
                 'telp.required' => 'Nomor telepon member tidak boleh kosong!',
                 'telp.max' => 'Panjang nomor telepon melebihi batas!',
+                'telp.unique' => 'Nomer telepon member telah terdaftar, coba nomer lainnya',
             ]
         );
         $member = Member::create([
@@ -63,21 +66,23 @@ class MemberController extends Controller
     //update data
     public function update(Request $request, $id){
         $validator = $request->validate([
-            'nama_member' => 'required|string|max:100|unique:members,nama_member',
+            'nama_member' => 'required|string|max:100|unique:members,nama_member,'.$id,
             'alamat' => 'required|string',
             'jenis_kelamin'=>'required',
-            'telp'=>'required|string|max:15',
+            'telp'=>'required|string|max:15|unique:members,nama_member,'.$id,
             ],
             [
                 'nama_member.required' => 'Nama member tidak boleh kosong!',
                 'nama_member.max' => 'Nama melebihi batas!',
-    
+                'nama_member.unique' => 'Nama member telah terdaftar, coba nama lainnya',
+                
                 'alamat.required' => 'Alamat member tidak boleh kosong!',
 
                 'jenis_kelamin.required' => 'Jenis kelamin member tidak boleh kosong!',
     
                 'telp.required' => 'Nomor telepon member tidak boleh kosong!',
                 'telp.max' => 'Panjang nomor telepon melebihi batas!',
+                'telp.unique' => 'Nomer telepon member telah terdaftar, coba nomer lainnya',
             ]
         );
         $member = Member::where('id',$id)->update([
@@ -91,7 +96,12 @@ class MemberController extends Controller
 
     //hapus data
     public function delete($id){
-        $member = Member::where('id',$id)->delete();
-        return redirect()->back()->with('message-hapus','Data berhasil dihapus!');
+        try {
+            $member = Member::where('id',$id)->delete();
+            return redirect()->back()->with('message-hapus','Data berhasil dihapus!');
+        } catch(Exception $e) {
+            return redirect()->back()->with('message-gagal','Data gagal dihapus, data sedang digunakan ditransaksi!');
+        }
+        
     }
 }

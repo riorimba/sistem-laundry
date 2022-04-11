@@ -22,7 +22,7 @@ class TransaksiController extends Controller
         $transaksi = DB::table('transaksis')->select('transaksis.id as id_transaksi','transaksis.*','outlets.*','members.*',"pakets.*")
                                            ->join('outlets','outlets.id', '=', 'transaksis.id_outlet')
                                            ->join('members','members.id', '=', 'transaksis.id_member')
-                                           ->join('pakets','pakets.id', '=', 'transaksis.id_paket')->paginate(5);
+                                           ->join('pakets','pakets.id', '=', 'transaksis.id_paket')->latest('transaksis.created_at')->paginate(5);
         return view('sidebar.transaksi.transaksi', compact('transaksi'));
     }
 

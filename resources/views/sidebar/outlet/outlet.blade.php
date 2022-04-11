@@ -67,6 +67,17 @@
                 </div>
               </div>
               @endif
+              {{-- message gagal hapus data --}}
+              @if (session('message-gagal'))
+              <div class="alert alert-danger alert-dismissible show fade">
+                <div class="alert-body">
+                  <button class="close" data-dismiss="alert">
+                    <span>×</span>
+                  </button>
+                  {{(session('message-gagal'))}}
+                </div>
+              </div>
+              @endif
               <table class="table table-striped table-bordered">
                 <tr>
                   <th>No</th>

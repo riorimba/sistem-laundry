@@ -8,13 +8,13 @@ use App\Outlet;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
-
+use Exception;
 
 class PaketController extends Controller
 {
     //tampil data
     public function show(){
-        $data = DB::table('outlets')->join('pakets','pakets.id_outlet', '=', 'outlets.id')->paginate(5);
+        $data = DB::table('outlets')->join('pakets','pakets.id_outlet', '=', 'outlets.id')->latest('pakets.created_at')->paginate(5);
         return view('sidebar.paket.paket', ['paket' => $data]);
         
     }
@@ -29,7 +29,7 @@ class PaketController extends Controller
         $validator = $request->validate([
             'id_outlet' => 'required',
             'jenis' => 'required|string',
-            'nama_paket'=>'required|string',
+            'nama_paket'=>'required|string|unique:pakets,nama_paket',
             'harga'=>'required|string',
             ],
             [
@@ -38,6 +38,7 @@ class PaketController extends Controller
                 'jenis.required' => 'Jenis paket tidak boleh kosong!',
 
                 'nama_paket.required' => 'Nama paket tidak boleh kosong!',
+                'nama_paket.unique' => 'Nama paket telah terdaftar, coba nama lainnya',
     
                 'harga.required' => 'Harga paket tidak boleh kosong!',
                 
@@ -68,7 +69,7 @@ class PaketController extends Controller
         $validator = $request->validate([
             'id_outlet' => 'required',
             'jenis' => 'required',
-            'nama_paket'=>'required|max:50',
+            'nama_paket'=>'required|max:50|unique:pakets,nama_paket,'.$id,
             'harga'=>'required|string|max:11',
             ],
             [
@@ -78,6 +79,7 @@ class PaketController extends Controller
 
                 'nama_paket.required' => 'Nama paket tidak boleh kosong!',
                 'nama_paket.max' => 'Nama paket terlalu panjang!',
+                'nama_paket.unique' => 'Nama paket telah terdaftar, coba nama lainnya',
     
                 'harga.required' => 'Harga tidak boleh kosong!',
                 'harga.max' => 'Harga melebihi batas!',
@@ -93,8 +95,12 @@ class PaketController extends Controller
     }
 
     public function delete($id) {
-        $paket = Paket::where('id',$id)->delete();
-
-        return redirect()->back()->with('message-hapus','Data berhasil dihapus!');;
+        try {
+            $paket = Paket::where('id',$id)->delete();
+            return redirect()->back()->with('message-hapus','Data berhasil dihapus!');;
+        } catch(Exception $e) {
+            return redirect()->back()->with('message-gagal','Data gagal dihapus, data sedang digunakan ditransaksi!');
+        }
+        
     }
 }
